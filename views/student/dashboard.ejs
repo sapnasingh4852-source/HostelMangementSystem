@@ -1,0 +1,264 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../partials/alerts') %>
+
+  <!-- Top Hero / Welcome Banner -->
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">Student Dashboard</h2>
+      <p class="text-muted mb-0">Welcome back, <span class="fw-semibold text-primary"><%= currentUser.name %></span>! Here is your campus housing overview.</p>
+    </div>
+    <div class="mt-2 mt-md-0">
+      <% if (activeAllotment) { %>
+        <span class="badge bg-success-subtle text-success border border-success px-3 py-2 fs-6">
+          <i class="bi bi-check-circle-fill me-1"></i> Room Allotted: <%= activeAllotment.block ? activeAllotment.block.name : '' %> - Room <%= activeAllotment.room ? activeAllotment.room.roomNumber : '' %>
+        </span>
+      <% } else { %>
+        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning px-3 py-2 fs-6">
+          <i class="bi bi-clock-history me-1"></i> No Active Allotment
+        </span>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Key Metrics Row -->
+  <div class="row g-3 mb-4">
+    <!-- Room Allotment Card -->
+    <div class="col-md-6 col-lg-3">
+      <div class="stat-card card-hover h-100">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Room Status</div>
+            <% if (activeAllotment && activeAllotment.room) { %>
+              <div class="fs-4 fw-bold text-dark mt-1">Room <%= activeAllotment.room.roomNumber %></div>
+              <div class="small text-muted"><%= activeAllotment.block ? activeAllotment.block.name : '' %> &bull; <%= activeAllotment.room.roomType %></div>
+            <% } else { %>
+              <div class="fs-5 fw-bold text-warning-emphasis mt-1">Not Allotted</div>
+              <div class="small text-muted">Ready to request a room</div>
+            <% } %>
+          </div>
+          <div class="stat-icon <%= activeAllotment ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning' %>">
+            <i class="bi <%= activeAllotment ? 'bi-house-check-fill' : 'bi-house-dash' %>"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <% if (activeAllotment) { %>
+            <a href="/student/my-room" class="btn btn-sm btn-outline-success w-100">View Room Details &rarr;</a>
+          <% } else { %>
+            <a href="/student/rooms" class="btn btn-sm btn-primary w-100">Browse Available Rooms &rarr;</a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Maintenance Complaints Card -->
+    <div class="col-md-6 col-lg-3">
+      <div class="stat-card card-hover h-100">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Maintenance</div>
+            <div class="fs-4 fw-bold text-dark mt-1"><%= activeMaintenanceCount %> Active</div>
+            <div class="small text-muted">Pending or in-progress tickets</div>
+          </div>
+          <div class="stat-icon bg-info-subtle text-info">
+            <i class="bi bi-tools"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <a href="/student/maintenance" class="btn btn-sm btn-outline-info w-100">Open Complaint Desk &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Room Requests Status Card -->
+    <div class="col-md-6 col-lg-3">
+      <div class="stat-card card-hover h-100">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Room Requests</div>
+            <% if (pendingRoomRequest) { %>
+              <div class="fs-5 fw-bold text-warning-emphasis mt-1">Pending Review</div>
+              <div class="small text-muted">Pref: Room <%= pendingRoomRequest.preferredRoom ? pendingRoomRequest.preferredRoom.roomNumber : '' %></div>
+            <% } else if (pendingChangeRequest) { %>
+              <div class="fs-5 fw-bold text-info-emphasis mt-1">Change Requested</div>
+              <div class="small text-muted">Pref: Room <%= pendingChangeRequest.preferredRoom ? pendingChangeRequest.preferredRoom.roomNumber : '' %></div>
+            <% } else { %>
+              <div class="fs-5 fw-bold text-muted mt-1">None Pending</div>
+              <div class="small text-muted">All applications reviewed</div>
+            <% } %>
+          </div>
+          <div class="stat-icon bg-secondary-subtle text-secondary">
+            <i class="bi bi-file-earmark-text"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <a href="/student/requests" class="btn btn-sm btn-outline-secondary w-100">View Requests History &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mess & Meals Card -->
+    <div class="col-md-6 col-lg-3">
+      <div class="stat-card card-hover h-100">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Mess Menu</div>
+            <div class="fs-5 fw-bold text-dark mt-1"><%= currentDayName %> Menu</div>
+            <div class="small text-muted">Breakfast, Lunch, Snacks, Dinner</div>
+          </div>
+          <div class="stat-icon bg-danger-subtle text-danger">
+            <i class="bi bi-cup-hot-fill"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <a href="/student/mess-menu" class="btn btn-sm btn-outline-danger w-100">View Weekly Menu &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Row: Today's Mess & Quick Actions -->
+  <div class="row g-4 mb-4">
+    <!-- Today's Mess Menu Card -->
+    <div class="col-lg-7">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+          <span class="fw-bold"><i class="bi bi-calendar-check text-primary me-2"></i> Today's Meals (<%= currentDayName %>)</span>
+          <a href="/student/feedback" class="btn btn-sm btn-outline-warning text-dark"><i class="bi bi-star-fill text-warning me-1"></i> Rate Meals</a>
+        </div>
+        <div class="card-body">
+          <% if (todayMeals) { %>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <div class="p-3 rounded bg-light border-start border-3 border-warning">
+                  <div class="fw-bold text-dark mb-1"><i class="bi bi-sun me-1 text-warning"></i> Breakfast</div>
+                  <div class="text-secondary small"><%= todayMeals.breakfast || 'Menu not updated yet' %></div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-3 rounded bg-light border-start border-3 border-primary">
+                  <div class="fw-bold text-dark mb-1"><i class="bi bi-brightness-high me-1 text-primary"></i> Lunch</div>
+                  <div class="text-secondary small"><%= todayMeals.lunch || 'Menu not updated yet' %></div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-3 rounded bg-light border-start border-3 border-info">
+                  <div class="fw-bold text-dark mb-1"><i class="bi bi-cup-straw me-1 text-info"></i> Snacks</div>
+                  <div class="text-secondary small"><%= todayMeals.snacks || 'Menu not updated yet' %></div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-3 rounded bg-light border-start border-3 border-success">
+                  <div class="fw-bold text-dark mb-1"><i class="bi bi-moon-stars me-1 text-success"></i> Dinner</div>
+                  <div class="text-secondary small"><%= todayMeals.dinner || 'Menu not updated yet' %></div>
+                </div>
+              </div>
+            </div>
+          <% } else { %>
+            <div class="text-center py-4 text-muted">
+              <i class="bi bi-calendar-x fs-2 d-block mb-2 text-secondary"></i>
+              No published mess menu available for today. Please check back soon.
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Action Launcher -->
+    <div class="col-lg-5">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <span class="fw-bold"><i class="bi bi-lightning-charge-fill text-warning me-2"></i> Quick Actions</span>
+        </div>
+        <div class="card-body d-flex flex-column justify-content-around gap-2">
+          <% if (!activeAllotment) { %>
+            <a href="/student/rooms" class="btn btn-primary d-flex align-items-center justify-content-between p-3 text-start">
+              <div>
+                <div class="fw-bold"><i class="bi bi-door-open me-2"></i> Apply for Hostel Room</div>
+                <div class="small text-white-50">Explore available blocks and submit room request</div>
+              </div>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          <% } else { %>
+            <a href="/student/my-room" class="btn btn-success d-flex align-items-center justify-content-between p-3 text-start">
+              <div>
+                <div class="fw-bold"><i class="bi bi-house-door me-2"></i> Manage My Room</div>
+                <div class="small text-white-50">Room details, roommates & facilities</div>
+              </div>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="/student/room-change" class="btn btn-outline-primary d-flex align-items-center justify-content-between p-3 text-start">
+              <div>
+                <div class="fw-bold"><i class="bi bi-arrow-left-right me-2"></i> Request Room Change</div>
+                <div class="small text-muted">Apply for a transfer to another available room</div>
+              </div>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          <% } %>
+
+          <a href="/student/maintenance" class="btn btn-outline-info text-dark d-flex align-items-center justify-content-between p-3 text-start">
+            <div>
+              <div class="fw-bold"><i class="bi bi-tools me-2 text-info"></i> Raise Maintenance Complaint</div>
+              <div class="small text-muted">Report electrical, plumbing or furniture issues</div>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+          </a>
+
+          <a href="/student/feedback" class="btn btn-outline-secondary d-flex align-items-center justify-content-between p-3 text-start">
+            <div>
+              <div class="fw-bold"><i class="bi bi-chat-square-quote me-2"></i> Submit Meal Feedback</div>
+              <div class="small text-muted">Give 1-5 star ratings for today's food</div>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Maintenance Tickets Table -->
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <span class="fw-bold"><i class="bi bi-wrench-adjustable text-primary me-2"></i> Your Recent Maintenance Requests</span>
+      <a href="/student/maintenance" class="btn btn-sm btn-link text-decoration-none">View All Tickets &rarr;</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Issue Title</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Admin Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (maintenanceRequests && maintenanceRequests.length > 0) { %>
+            <% maintenanceRequests.forEach(req => { %>
+              <tr>
+                <td><%= helpers.formatDate(req.createdAt) %></td>
+                <td><span class="badge bg-light text-dark border"><%= req.category %></span></td>
+                <td class="fw-semibold text-dark"><%= req.title %></td>
+                <td><span class="badge <%= helpers.priorityBadge(req.priority) %>"><%= req.priority %></span></td>
+                <td><span class="badge <%= helpers.statusBadge(req.status) %>"><%= req.status %></span></td>
+                <td class="text-muted small"><%= req.adminRemarks || 'Under review' %></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center py-4 text-muted">
+                No maintenance complaints raised yet. Everything is in working order!
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

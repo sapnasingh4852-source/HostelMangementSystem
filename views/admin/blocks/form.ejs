@@ -1,0 +1,72 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../../partials/alerts') %>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h4 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-building me-2"></i> <%= isEditing ? 'Edit Hostel Block' : 'Create New Hostel Block' %>
+          </h4>
+        </div>
+        <div class="card-body p-4">
+          <form action="<%= isEditing ? `/admin/blocks/${block._id}?_method=PUT` : '/admin/blocks' %>" method="POST">
+            <div class="row g-3">
+              <div class="col-md-7">
+                <label for="name" class="form-label fw-semibold small">Block Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="name" name="name" value="<%= block.name || '' %>" placeholder="e.g. Block A - Ramanujan Hall" required>
+              </div>
+
+              <div class="col-md-5">
+                <label for="code" class="form-label fw-semibold small">Block Code <span class="text-danger">*</span></label>
+                <input type="text" class="form-control text-uppercase" id="code" name="code" value="<%= block.code || '' %>" placeholder="e.g. BLK-A" required>
+              </div>
+
+              <div class="col-md-4">
+                <label for="numberOfFloors" class="form-label fw-semibold small">Number of Floors <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="numberOfFloors" name="numberOfFloors" value="<%= block.numberOfFloors || 3 %>" min="1" max="20" required>
+              </div>
+
+              <div class="col-md-4">
+                <label for="genderRestriction" class="form-label fw-semibold small">Gender Policy</label>
+                <select class="form-select" id="genderRestriction" name="genderRestriction">
+                  <option value="Male" <%= block.genderRestriction === 'Male' ? 'selected' : '' %>>Male Only</option>
+                  <option value="Female" <%= block.genderRestriction === 'Female' ? 'selected' : '' %>>Female Only</option>
+                  <option value="Co-ed" <%= block.genderRestriction === 'Co-ed' ? 'selected' : '' %>>Co-ed / PG</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label for="status" class="form-label fw-semibold small">Status</label>
+                <select class="form-select" id="status" name="status">
+                  <option value="Active" <%= block.status === 'Active' ? 'selected' : '' %>>Active</option>
+                  <option value="Inactive" <%= block.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
+                  <option value="Under Maintenance" <%= block.status === 'Under Maintenance' ? 'selected' : '' %>>Under Maintenance</option>
+                </select>
+              </div>
+
+              <div class="col-12">
+                <label for="description" class="form-label fw-semibold small">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Facilities, proximity to campus, rules, etc."><%= block.description || '' %></textarea>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <a href="/admin/blocks" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Cancel
+              </a>
+              <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                <i class="bi bi-save me-1"></i> <%= isEditing ? 'Save Changes' : 'Create Block' %>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/footer') %>

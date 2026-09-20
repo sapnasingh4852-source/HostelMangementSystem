@@ -1,0 +1,38 @@
+{
+  "name": "hostel-management-system",
+  "version": "1.0.0",
+  "description": "Full-Stack Hostel Room Allotment & Mess Management System",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "seed": "node seeds/seed.js"
+  },
+  "keywords": [
+    "hostel",
+    "allotment",
+    "mess-management",
+    "express",
+    "nodejs",
+    "mongodb",
+    "ejs"
+  ],
+  "author": "Antigravity Engineering",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.1",
+    "method-override": "^3.0.0",
+    "mongoose": "^8.9.5",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

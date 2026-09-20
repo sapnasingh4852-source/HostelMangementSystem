@@ -1,0 +1,142 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../partials/alerts') %>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">Maintenance Complaint Desk</h2>
+      <p class="text-muted mb-0">Report facilities issues in your room to the hostel maintenance crew.</p>
+    </div>
+    <div class="mt-2 mt-md-0">
+      <% if (hasActiveAllotment) { %>
+        <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#newComplaintCollapse">
+          <i class="bi bi-plus-circle me-1"></i> Raise New Complaint
+        </button>
+      <% } %>
+    </div>
+  </div>
+
+  <% if (!hasActiveAllotment) { %>
+    <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center mb-4">
+      <i class="bi bi-exclamation-triangle-fill fs-4 me-3 text-warning"></i>
+      <div>
+        <strong>Notice:</strong> You do not have an active room allotment. Maintenance complaints can only be filed by currently resident students for their assigned rooms.
+      </div>
+    </div>
+  <% } else { %>
+    <!-- New Complaint Form (Collapsible) -->
+    <div class="collapse mb-4" id="newComplaintCollapse">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="fw-bold mb-0 text-primary"><i class="bi bi-wrench me-2"></i> Submit Issue Report</h5>
+        </div>
+        <div class="card-body p-4">
+          <form action="/student/maintenance" method="POST">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="category" class="form-label fw-semibold small">Category <span class="text-danger">*</span></label>
+                <select class="form-select" id="category" name="category" required>
+                  <option value="">-- Select Problem Category --</option>
+                  <option value="Electrical">Electrical (Light, Switch, Power Socket)</option>
+                  <option value="Plumbing">Plumbing (Tap, Leakage, Drainage, Shower)</option>
+                  <option value="Fan">Ceiling Fan</option>
+                  <option value="Light">Tube Light / Bulbs</option>
+                  <option value="Furniture">Furniture (Bed, Study Table, Cupboard)</option>
+                  <option value="Wi-Fi">Wi-Fi & Internet</option>
+                  <option value="Door/Window">Door / Window / Lock</option>
+                  <option value="Cleaning">Sanitation & Cleaning</option>
+                  <option value="Other">Other Miscellaneous</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label for="priority" class="form-label fw-semibold small">Priority Level <span class="text-danger">*</span></label>
+                <select class="form-select" id="priority" name="priority" required>
+                  <option value="Low">Low (Can be fixed in regular round)</option>
+                  <option value="Medium" selected>Medium (Standard 24-48 hr)</option>
+                  <option value="High">High (Urgent attention required)</option>
+                  <option value="Emergency">Emergency (Immediate safety hazard / flood)</option>
+                </select>
+              </div>
+
+              <div class="col-12">
+                <label for="title" class="form-label fw-semibold small">Issue Title <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Brief summary, e.g. Ceiling fan making loud rattling noise" required>
+              </div>
+
+              <div class="col-12">
+                <label for="description" class="form-label fw-semibold small">Detailed Description <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Provide details such as exact location in room, when it started, etc." required></textarea>
+              </div>
+            </div>
+
+            <div class="mt-4 text-end">
+              <button type="button" class="btn btn-outline-secondary me-2" data-bs-toggle="collapse" data-bs-target="#newComplaintCollapse">Cancel</button>
+              <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                <i class="bi bi-send-fill me-1"></i> Submit Ticket
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Complaints List Card -->
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3">
+      <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i> Complaint Tickets History</h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Room</th>
+            <th>Category</th>
+            <th>Title & Details</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Resolution / Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (requests && requests.length > 0) { %>
+            <% requests.forEach(r => { %>
+              <tr>
+                <td><%= helpers.formatDate(r.createdAt) %></td>
+                <td>
+                  <div class="fw-semibold">Room <%= r.room ? r.room.roomNumber : '-' %></div>
+                  <div class="small text-muted"><%= r.block ? r.block.name : '-' %></div>
+                </td>
+                <td><span class="badge bg-light text-dark border"><%= r.category %></span></td>
+                <td>
+                  <div class="fw-semibold text-dark"><%= r.title %></div>
+                  <div class="small text-muted" style="max-width: 320px;"><%= r.description %></div>
+                </td>
+                <td><span class="badge <%= helpers.priorityBadge(r.priority) %>"><%= r.priority %></span></td>
+                <td><span class="badge <%= helpers.statusBadge(r.status) %>"><%= r.status %></span></td>
+                <td class="small text-secondary">
+                  <%= r.adminRemarks || (r.status === 'Resolved' ? 'Resolved by maintenance' : 'Pending inspection') %>
+                  <% if (r.resolvedAt) { %>
+                    <div class="text-muted" style="font-size: 0.72rem;">Resolved: <%= helpers.formatDate(r.resolvedAt) %></div>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" class="text-center py-4 text-muted">
+                No maintenance complaints recorded.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

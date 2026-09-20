@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../partials/alerts') %>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">My Mess Billing Statements</h2>
+      <p class="text-muted mb-0">Monthly catering fees calculated based on mess attendance (Present Days &times; Per-Day Rate).</p>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Billing Period</th>
+            <th>Days Present</th>
+            <th>Per-Day Rate</th>
+            <th>Total Amount</th>
+            <th>Payment Status</th>
+            <th>Date Paid / Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (bills && bills.length > 0) { %>
+            <% bills.forEach(bill => { %>
+              <tr>
+                <td class="fw-bold text-dark">
+                  <%= helpers.monthName(bill.month) %> <%= bill.year %>
+                </td>
+                <td><%= bill.presentDays %> Days</td>
+                <td><%= helpers.formatCurrency(bill.ratePerDay) %> / day</td>
+                <td class="fw-bold fs-6 text-primary"><%= helpers.formatCurrency(bill.totalAmount) %></td>
+                <td>
+                  <span class="badge <%= helpers.statusBadge(bill.status) %>">
+                    <%= bill.status %>
+                  </span>
+                </td>
+                <td class="small text-muted">
+                  <% if (bill.status === 'Paid') { %>
+                    <span class="text-success"><i class="bi bi-check-circle-fill me-1"></i> Paid on <%= helpers.formatDate(bill.paidAt) %></span>
+                  <% } else { %>
+                    <span><%= bill.notes || 'Payable at warden counter' %></span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center py-5 text-muted">
+                <i class="bi bi-receipt fs-2 d-block mb-2 text-secondary"></i>
+                No mess billing records found for your account yet.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

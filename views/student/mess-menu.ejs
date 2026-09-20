@@ -1,0 +1,109 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../partials/alerts') %>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">Weekly Mess Menu</h2>
+      <p class="text-muted mb-0">Nutritional meal schedule approved by hostel dining committee.</p>
+    </div>
+    <div class="mt-2 mt-md-0">
+      <a href="/student/feedback" class="btn btn-warning text-dark fw-semibold">
+        <i class="bi bi-star-fill me-1"></i> Give Meal Feedback
+      </a>
+    </div>
+  </div>
+
+  <% if (menu && menu.menu) { %>
+    <div class="alert alert-primary bg-primary-subtle border-0 d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <i class="bi bi-calendar3 me-2 fs-5 text-primary"></i>
+        <strong>Week Schedule:</strong> <%= helpers.formatDate(menu.weekStartDate) %> &mdash; <%= helpers.formatDate(menu.weekEndDate) %>
+      </div>
+      <span class="badge bg-success">Published Menu</span>
+    </div>
+
+    <!-- 7-Day Meal Schedule Cards -->
+    <div class="row g-4">
+      <% const daysOfWeek = [
+        { key: 'monday', label: 'Monday' },
+        { key: 'tuesday', label: 'Tuesday' },
+        { key: 'wednesday', label: 'Wednesday' },
+        { key: 'thursday', label: 'Thursday' },
+        { key: 'friday', label: 'Friday' },
+        { key: 'saturday', label: 'Saturday' },
+        { key: 'sunday', label: 'Sunday' }
+      ]; %>
+
+      <% daysOfWeek.forEach(day => { %>
+        <% const isCurrentDay = currentDay.toLowerCase() === day.key.toLowerCase(); %>
+        <% const mealData = menu.menu[day.key] || {}; %>
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm meal-card <%= isCurrentDay ? 'today shadow' : '' %>">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+              <h5 class="fw-bold mb-0 <%= isCurrentDay ? 'text-success' : 'text-dark' %>">
+                <i class="bi bi-calendar-event me-2"></i> <%= day.label %>
+              </h5>
+              <% if (isCurrentDay) { %>
+                <span class="badge bg-success px-2 py-1"><i class="bi bi-clock-fill me-1"></i> Today</span>
+              <% } %>
+            </div>
+            <div class="card-body p-3">
+              <!-- Breakfast -->
+              <div class="mb-3 pb-2 border-bottom">
+                <div class="fw-semibold text-warning-emphasis small mb-1">
+                  <i class="bi bi-sun me-1 text-warning"></i> Breakfast (7:30 AM &ndash; 9:30 AM)
+                </div>
+                <div class="text-secondary small ps-3">
+                  <%= mealData.breakfast || 'Not scheduled' %>
+                </div>
+              </div>
+
+              <!-- Lunch -->
+              <div class="mb-3 pb-2 border-bottom">
+                <div class="fw-semibold text-primary small mb-1">
+                  <i class="bi bi-brightness-high me-1 text-primary"></i> Lunch (12:30 PM &ndash; 2:30 PM)
+                </div>
+                <div class="text-secondary small ps-3">
+                  <%= mealData.lunch || 'Not scheduled' %>
+                </div>
+              </div>
+
+              <!-- Snacks -->
+              <div class="mb-3 pb-2 border-bottom">
+                <div class="fw-semibold text-info small mb-1">
+                  <i class="bi bi-cup-straw me-1 text-info"></i> Snacks & Tea (4:30 PM &ndash; 5:30 PM)
+                </div>
+                <div class="text-secondary small ps-3">
+                  <%= mealData.snacks || 'Not scheduled' %>
+                </div>
+              </div>
+
+              <!-- Dinner -->
+              <div>
+                <div class="fw-semibold text-success small mb-1">
+                  <i class="bi bi-moon-stars me-1 text-success"></i> Dinner (7:30 PM &ndash; 9:30 PM)
+                </div>
+                <div class="text-secondary small ps-3">
+                  <%= mealData.dinner || 'Not scheduled' %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="card p-5 text-center shadow-sm border-0 text-muted my-4">
+      <div class="stat-icon bg-secondary-subtle text-secondary mx-auto mb-3" style="width: 64px; height: 64px; font-size: 2rem;">
+        <i class="bi bi-calendar-x"></i>
+      </div>
+      <h4 class="fw-bold text-dark">Mess Menu Not Yet Published</h4>
+      <p class="small text-muted mb-0">The dining committee has not published the weekly menu yet. Please check back shortly.</p>
+    </div>
+  <% } %>
+</main>
+
+<%- include('../partials/footer') %>

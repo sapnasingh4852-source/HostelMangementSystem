@@ -1,0 +1,92 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../../partials/alerts') %>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h4 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-calculator me-2"></i> Generate Monthly Mess Bills
+          </h4>
+        </div>
+        <div class="card-body p-4">
+          <p class="text-muted small mb-4">
+            This tool generates monthly catering statements for all students with active hostel room allotments. Formula: <code>Mess Bill = Present Days &times; Per-Day Rate</code>.
+          </p>
+
+          <form action="/admin/bills/generate" method="POST">
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label for="month" class="form-label fw-semibold small">Billing Month <span class="text-danger">*</span></label>
+                <select class="form-select" id="month" name="month" required>
+                  <% for (let m = 1; m <= 12; m++) { %>
+                    <option value="<%= m %>" <%= m === currentMonth ? 'selected' : '' %>>
+                      <%= helpers.monthName(m) %>
+                    </option>
+                  <% } %>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label for="year" class="form-label fw-semibold small">Billing Year <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="year" name="year" value="<%= currentYear %>" required>
+              </div>
+
+              <div class="col-md-6">
+                <label for="ratePerDay" class="form-label fw-semibold small">Per-Day Mess Charge (₹) <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text">₹</span>
+                  <input type="number" class="form-control" id="ratePerDay" name="ratePerDay" value="120" min="10" required>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="defaultPresentDays" class="form-label fw-semibold small">Default Present Days <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="defaultPresentDays" name="defaultPresentDays" value="26" min="1" max="31" required>
+                <div class="form-text">e.g. 26 days present out of 30 days (4 approved leave/weekend days deducted)</div>
+              </div>
+            </div>
+
+            <!-- Active Enrolled Students Summary -->
+            <div class="p-3 bg-light rounded mb-4">
+              <div class="fw-bold text-dark mb-1">
+                <i class="bi bi-people-fill text-primary me-1"></i> Active Allotted Students (<%= activeAllotments.length %>)
+              </div>
+              <div class="small text-muted mb-2">
+                The following students currently reside in hostel accommodation and will receive bills for this period:
+              </div>
+              <div class="small" style="max-height: 140px; overflow-y: auto;">
+                <% if (activeAllotments && activeAllotments.length > 0) { %>
+                  <ul class="list-unstyled mb-0">
+                    <% activeAllotments.forEach(a => { %>
+                      <li class="py-1 border-bottom">
+                        <strong><%= a.student ? a.student.name : 'Unknown' %></strong>
+                        <span class="text-muted">(<%= a.student ? a.student.studentId : '' %>) &mdash; <%= a.block ? a.block.name : '' %>, Room <%= a.room ? a.room.roomNumber : '' %></span>
+                      </li>
+                    <% }) %>
+                  </ul>
+                <% } else { %>
+                  <div class="text-warning">No active room allotments found. Allot rooms before generating bills.</div>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="/admin/bills" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to Bills
+              </a>
+              <button type="submit" class="btn btn-primary px-4 fw-semibold" <%= activeAllotments.length === 0 ? 'disabled' : '' %>>
+                <i class="bi bi-lightning-charge-fill me-1"></i> Generate Statements
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,203 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../partials/alerts') %>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">My Room Allotment</h2>
+      <p class="text-muted mb-0">View your assigned room details, roommates, and manage your accommodation.</p>
+    </div>
+    <div>
+      <% if (allotment) { %>
+        <span class="badge bg-success-subtle text-success border border-success px-3 py-2 fs-6">
+          <i class="bi bi-shield-fill-check me-1"></i> Active Allotment
+        </span>
+      <% } %>
+    </div>
+  </div>
+
+  <% if (allotment && allotment.room) { %>
+    <div class="row g-4">
+      <!-- Main Room Card -->
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0 text-primary">
+              <i class="bi bi-house-door-fill me-2"></i> <%= allotment.block ? allotment.block.name : 'Block' %> &mdash; Room <%= allotment.room.roomNumber %>
+            </h5>
+            <span class="badge bg-primary px-3 py-2"><%= allotment.room.roomType %></span>
+          </div>
+          <div class="card-body p-4">
+            <div class="row g-3 mb-4">
+              <div class="col-sm-6 col-md-4">
+                <div class="p-3 bg-light rounded text-center">
+                  <div class="text-muted small">Hostel Block</div>
+                  <div class="fw-bold text-dark fs-6"><%= allotment.block ? allotment.block.name : 'N/A' %></div>
+                  <div class="small text-secondary"><%= allotment.block ? allotment.block.code : '' %></div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-4">
+                <div class="p-3 bg-light rounded text-center">
+                  <div class="text-muted small">Floor Level</div>
+                  <div class="fw-bold text-dark fs-6">Floor <%= allotment.room.floor %></div>
+                  <div class="small text-secondary">Wing A</div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-4">
+                <div class="p-3 bg-light rounded text-center">
+                  <div class="text-muted small">Room Capacity</div>
+                  <div class="fw-bold text-dark fs-6"><%= allotment.room.currentOccupancy %> / <%= allotment.room.capacity %> Occupied</div>
+                  <div class="small text-success"><%= Math.max(0, allotment.room.capacity - allotment.room.currentOccupancy) %> Bed(s) Available</div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-4">
+                <div class="p-3 bg-light rounded text-center">
+                  <div class="text-muted small">Allotted Since</div>
+                  <div class="fw-bold text-dark fs-6"><%= helpers.formatDate(allotment.startDate) %></div>
+                  <div class="small text-secondary">Verified Record</div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-4">
+                <div class="p-3 bg-light rounded text-center">
+                  <div class="text-muted small">Monthly Fee</div>
+                  <div class="fw-bold text-success fs-6"><%= helpers.formatCurrency(allotment.room.monthlyFee) %></div>
+                  <div class="small text-secondary">Base Rent</div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-4">
+                <div class="p-3 bg-light rounded text-center">
+                  <div class="text-muted small">Room Status</div>
+                  <div class="fw-bold text-dark fs-6">
+                    <span class="badge <%= helpers.statusBadge(allotment.room.status) %>"><%= allotment.room.status %></span>
+                  </div>
+                  <div class="small text-secondary">Operational</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Facilities in Room -->
+            <div class="mb-4">
+              <h6 class="fw-bold text-secondary mb-2">Room Amenities & Features:</h6>
+              <div>
+                <% if (allotment.room.facilities && allotment.room.facilities.length > 0) { %>
+                  <% allotment.room.facilities.forEach(f => { %>
+                    <span class="facility-badge py-2 px-3 fs-6 mb-2">
+                      <i class="bi bi-check-circle-fill text-success me-1"></i> <%= f %>
+                    </span>
+                  <% }) %>
+                <% } else { %>
+                  <span class="text-muted">Standard room amenities provided.</span>
+                <% } %>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Roommates Section -->
+            <div>
+              <h6 class="fw-bold text-dark mb-3"><i class="bi bi-people-fill text-primary me-2"></i> Roommates in this Room:</h6>
+              <% if (roommates && roommates.length > 0) { %>
+                <div class="list-group">
+                  <% roommates.forEach(mate => { %>
+                    <% if (mate.student) { %>
+                      <div class="list-group-item d-flex justify-content-between align-items-center py-3 border rounded mb-2">
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-3 fw-bold" style="width: 40px; height: 40px;">
+                            <%= mate.student.name.charAt(0).toUpperCase() %>
+                          </div>
+                          <div>
+                            <div class="fw-bold text-dark"><%= mate.student.name %></div>
+                            <div class="small text-muted">
+                              Roll: <%= mate.student.studentId || 'N/A' %> &bull; <%= mate.student.department %> (<%= mate.student.year %>)
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <a href="mailto:<%= mate.student.email %>" class="btn btn-sm btn-outline-secondary" title="Email Roommate">
+                            <i class="bi bi-envelope"></i>
+                          </a>
+                        </div>
+                      </div>
+                    <% } %>
+                  <% }) %>
+                </div>
+              <% } else { %>
+                <div class="bg-light p-3 rounded text-muted small">
+                  <i class="bi bi-info-circle me-1"></i> No other roommates currently allotted in this room.
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Panel Side -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-white py-3">
+            <h6 class="fw-bold mb-0"><i class="bi bi-sliders text-primary me-2"></i> Allotment Actions</h6>
+          </div>
+          <div class="card-body p-3 d-flex flex-column gap-3">
+            <!-- Room Change Action -->
+            <% if (pendingChangeRequest) { %>
+              <div class="p-3 rounded bg-warning-subtle border border-warning text-warning-emphasis">
+                <div class="fw-bold small mb-1"><i class="bi bi-hourglass-split me-1"></i> Change Request Pending</div>
+                <div class="small">You have applied for transfer to <strong>Room <%= pendingChangeRequest.preferredRoom ? pendingChangeRequest.preferredRoom.roomNumber : '' %></strong>. Awaiting warden review.</div>
+              </div>
+            <% } else { %>
+              <a href="/student/room-change" class="btn btn-outline-primary p-3 text-start">
+                <div class="fw-bold"><i class="bi bi-arrow-left-right me-2"></i> Request Room Change</div>
+                <div class="small text-muted">Apply to transfer to another available hostel room</div>
+              </a>
+            <% } %>
+
+            <!-- Maintenance Action -->
+            <a href="/student/maintenance" class="btn btn-outline-info text-dark p-3 text-start">
+              <div class="fw-bold"><i class="bi bi-tools me-2 text-info"></i> Room Maintenance</div>
+              <div class="small text-muted">Report plumbing, electrical, fan or furniture faults</div>
+            </a>
+
+            <!-- Vacate Room Action -->
+            <form action="/student/vacate" method="POST" data-confirm="Are you sure you want to vacate this room? This action will immediately release your bed for other students.">
+              <button type="submit" class="btn btn-outline-danger w-100 p-3 text-start">
+                <div class="fw-bold text-danger"><i class="bi bi-box-arrow-right me-2"></i> Vacate Hostel Room</div>
+                <div class="small text-muted">Relinquish your room allotment and free the bed</div>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Emergency Contact Card -->
+        <div class="card shadow-sm border-0 bg-light p-3">
+          <h6 class="fw-bold text-dark mb-2"><i class="bi bi-telephone-fill text-success me-2"></i> Hostel Help Desk</h6>
+          <p class="small text-muted mb-2">For urgent issues or lockouts, contact the warden office.</p>
+          <div class="small"><strong>Warden Office:</strong> +91 (0) 800-HOSTEL-HELP</div>
+          <div class="small"><strong>Hostel Hours:</strong> 6:00 AM &mdash; 10:30 PM</div>
+        </div>
+      </div>
+    </div>
+  <% } else { %>
+    <!-- Empty State -->
+    <div class="card p-5 text-center shadow-sm border-0 my-4">
+      <div class="stat-icon bg-warning-subtle text-warning mx-auto mb-3" style="width: 64px; height: 64px; font-size: 2rem;">
+        <i class="bi bi-door-closed"></i>
+      </div>
+      <h3 class="fw-bold text-dark mb-2">No Room Allotted Yet</h3>
+      <p class="text-muted mx-auto mb-4" style="max-width: 500px;">
+        You currently do not hold an active hostel room allotment. Browse our available blocks, check facilities, and submit a room application.
+      </p>
+      <div class="d-flex justify-content-center gap-2">
+        <a href="/student/rooms" class="btn btn-primary px-4 fw-semibold">
+          <i class="bi bi-search me-1"></i> Browse Available Rooms
+        </a>
+        <a href="/student/requests" class="btn btn-outline-secondary px-3">
+          <i class="bi bi-clock-history me-1"></i> Track Past Requests
+        </a>
+      </div>
+    </div>
+  <% } %>
+</main>
+
+<%- include('../partials/footer') %>

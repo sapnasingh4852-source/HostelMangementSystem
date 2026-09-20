@@ -1,0 +1,121 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../partials/alerts') %>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">Mess Meal Feedback</h2>
+      <p class="text-muted mb-0">Rate today's meals to help the hostel mess improve catering quality.</p>
+    </div>
+    <div class="mt-2 mt-md-0">
+      <a href="/student/mess-menu" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-calendar3 me-1"></i> View Weekly Menu
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Feedback Submission Form -->
+    <div class="col-lg-5">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-star-fill text-warning me-2"></i> Submit Meal Rating
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          <form action="/student/feedback" method="POST">
+            <!-- Meal Type -->
+            <div class="mb-3">
+              <label for="mealType" class="form-label fw-semibold small">Meal Type <span class="text-danger">*</span></label>
+              <select class="form-select" id="mealType" name="mealType" required>
+                <option value="">-- Choose Meal --</option>
+                <option value="Breakfast">Breakfast</option>
+                <option value="Lunch">Lunch</option>
+                <option value="Snacks">Snacks & Tea</option>
+                <option value="Dinner">Dinner</option>
+              </select>
+            </div>
+
+            <!-- Star Rating -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold small d-block">Rating (1 to 5 Stars) <span class="text-danger">*</span></label>
+              <div class="d-flex gap-3 align-items-center bg-light p-2 rounded">
+                <% for (let r = 1; r <= 5; r++) { %>
+                  <div class="form-check form-check-inline m-0">
+                    <input class="form-check-input" type="radio" name="rating" id="rating<%= r %>" value="<%= r %>" <%= r === 5 ? 'checked' : '' %> required>
+                    <label class="form-check-label fw-bold text-dark" for="rating<%= r %>">
+                      <%= r %> <i class="bi bi-star-fill text-warning" style="font-size: 0.85rem;"></i>
+                    </label>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="mb-4">
+              <label for="comments" class="form-label fw-semibold small">Comments / Suggestions</label>
+              <textarea class="form-control" id="comments" name="comments" rows="4" placeholder="Taste, hygiene, portion size, warmth, menu suggestions..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-warning w-100 py-2 fw-bold text-dark">
+              <i class="bi bi-send-check-fill me-1"></i> Submit Feedback
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback History -->
+    <div class="col-lg-7">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="fw-bold mb-0 text-dark">
+            <i class="bi bi-clock-history me-2 text-primary"></i> Your Recent Feedback Submissions
+          </h5>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Meal</th>
+                <th>Rating</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (pastFeedback && pastFeedback.length > 0) { %>
+                <% pastFeedback.forEach(f => { %>
+                  <tr>
+                    <td><%= helpers.formatDate(f.date) %></td>
+                    <td><span class="badge bg-light text-dark border"><%= f.mealType %></span></td>
+                    <td>
+                      <span class="rating-stars text-nowrap">
+                        <% for (let i = 1; i <= 5; i++) { %>
+                          <i class="bi <%= i <= f.rating ? 'bi-star-fill' : 'bi-star' %> text-warning"></i>
+                        <% } %>
+                        <span class="ms-1 fw-bold text-dark"><%= f.rating %>/5</span>
+                      </span>
+                    </td>
+                    <td class="small text-secondary"><%= f.comments || '-' %></td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="4" class="text-center py-4 text-muted">
+                    No past feedback records found. Share your thoughts on today's meal!
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,162 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+  <div class="container-fluid px-lg-4">
+    <a class="navbar-brand d-flex align-items-center fw-bold" href="/">
+      <i class="bi bi-buildings-fill me-2 fs-4 text-warning"></i>
+      <span>HostelHub</span>
+      <span class="badge bg-light text-primary ms-2 fs-xs text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Portal</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <% if (currentUser) { %>
+          <% if (currentUser.role === 'admin') { %>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath === '/admin/dashboard' ? 'active fw-semibold' : '' %>" href="/admin/dashboard">
+                <i class="bi bi-speedometer2 me-1"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath.startsWith('/admin/blocks') ? 'active fw-semibold' : '' %>" href="/admin/blocks">
+                <i class="bi bi-building me-1"></i> Blocks
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath.startsWith('/admin/rooms') ? 'active fw-semibold' : '' %>" href="/admin/rooms">
+                <i class="bi bi-door-open me-1"></i> Rooms
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle <%= (currentPath.includes('request') || currentPath.includes('maintenance')) ? 'active fw-semibold' : '' %>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-inbox-fill me-1"></i> Requests
+              </a>
+              <ul class="dropdown-menu shadow border-0">
+                <li><a class="dropdown-item" href="/admin/room-requests"><i class="bi bi-person-check me-2"></i> Room Requests</a></li>
+                <li><a class="dropdown-item" href="/admin/room-change-requests"><i class="bi bi-arrow-left-right me-2"></i> Change Requests</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/admin/maintenance"><i class="bi bi-tools me-2"></i> Maintenance Tickets</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle <%= (currentPath.includes('mess') || currentPath.includes('bill')) ? 'active fw-semibold' : '' %>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-cup-hot-fill me-1"></i> Mess & Billing
+              </a>
+              <ul class="dropdown-menu shadow border-0">
+                <li><a class="dropdown-item" href="/admin/mess"><i class="bi bi-calendar3 me-2"></i> Weekly Menus</a></li>
+                <li><a class="dropdown-item" href="/admin/mess-feedback"><i class="bi bi-star-half me-2"></i> Meal Feedback</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/admin/bills"><i class="bi bi-receipt me-2"></i> Mess Bills</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath === '/admin/students' ? 'active fw-semibold' : '' %>" href="/admin/students">
+                <i class="bi bi-people me-1"></i> Students
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath === '/admin/reports' ? 'active fw-semibold' : '' %>" href="/admin/reports">
+                <i class="bi bi-file-earmark-bar-graph me-1"></i> Reports
+              </a>
+            </li>
+          <% } else if (currentUser.role === 'student') { %>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath === '/student/dashboard' ? 'active fw-semibold' : '' %>" href="/student/dashboard">
+                <i class="bi bi-speedometer2 me-1"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath === '/student/rooms' ? 'active fw-semibold' : '' %>" href="/student/rooms">
+                <i class="bi bi-search me-1"></i> Browse Rooms
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath === '/student/my-room' ? 'active fw-semibold' : '' %>" href="/student/my-room">
+                <i class="bi bi-house-door-fill me-1"></i> My Room
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath === '/student/requests' ? 'active fw-semibold' : '' %>" href="/student/requests">
+                <i class="bi bi-clock-history me-1"></i> Requests
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath === '/student/maintenance' ? 'active fw-semibold' : '' %>" href="/student/maintenance">
+                <i class="bi bi-tools me-1"></i> Complaints
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath === '/student/mess-menu' ? 'active fw-semibold' : '' %>" href="/student/mess-menu">
+                <i class="bi bi-cup-hot-fill me-1"></i> Mess Menu
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath === '/student/feedback' ? 'active fw-semibold' : '' %>" href="/student/feedback">
+                <i class="bi bi-chat-square-heart me-1"></i> Feedback
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= currentPath === '/student/bills' ? 'active fw-semibold' : '' %>" href="/student/bills">
+                <i class="bi bi-receipt me-1"></i> Bills
+              </a>
+            </li>
+          <% } %>
+        <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath === '/' ? 'active' : '' %>" href="/">Home</a>
+          </li>
+        <% } %>
+      </ul>
+
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <% if (currentUser) { %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="avatar-sm bg-white text-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2 fw-bold" style="width: 32px; height: 32px;">
+                <%= currentUser.name.charAt(0).toUpperCase() %>
+              </span>
+              <div class="d-flex flex-column text-start d-none d-sm-inline-flex">
+                <span class="small fw-semibold text-white"><%= currentUser.name %></span>
+                <span class="text-white-50" style="font-size: 0.72rem;"><%= currentUser.role === 'admin' ? 'Warden / Admin' : 'Student' %></span>
+              </div>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+              <li class="px-3 py-2 border-bottom">
+                <div class="fw-semibold text-dark"><%= currentUser.name %></div>
+                <div class="small text-muted"><%= currentUser.email %></div>
+                <span class="badge <%= currentUser.role === 'admin' ? 'bg-danger' : 'bg-primary' %> mt-1">
+                  <%= currentUser.role.toUpperCase() %>
+                </span>
+              </li>
+              <% if (currentUser.role === 'student') { %>
+                <li><a class="dropdown-item py-2" href="/student/profile"><i class="bi bi-person me-2"></i> My Profile</a></li>
+                <li><a class="dropdown-item py-2" href="/student/my-room"><i class="bi bi-door-open me-2"></i> My Room</a></li>
+              <% } %>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form action="/logout" method="POST" class="d-inline">
+                  <button type="submit" class="dropdown-item text-danger py-2">
+                    <i class="bi bi-box-arrow-right me-2"></i> Sign Out
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </li>
+        <% } else { %>
+          <li class="nav-item me-2">
+            <a class="btn btn-outline-light btn-sm px-3" href="/login">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-warning btn-sm px-3 fw-semibold text-dark" href="/register">
+              <i class="bi bi-person-plus-fill me-1"></i> Student Register
+            </a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>

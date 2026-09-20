@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-5 my-auto">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <%- include('../partials/alerts') %>
+      
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+          <div class="text-center mb-4">
+            <div class="stat-icon bg-primary text-white mx-auto mb-2">
+              <i class="bi bi-box-arrow-in-right"></i>
+            </div>
+            <h3 class="fw-bold">Sign In</h3>
+            <p class="text-muted small">Access your Student or Warden Admin portal</p>
+          </div>
+
+          <form action="/login" method="POST">
+            <div class="mb-3">
+              <label for="email" class="form-label fw-semibold small">Email Address</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required autofocus>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="password" class="form-label fw-semibold small">Password</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
+                <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+            </button>
+          </form>
+
+          <hr class="my-4 text-muted">
+
+          <div class="bg-light p-3 rounded small mb-3">
+            <div class="fw-bold text-dark mb-1"><i class="bi bi-info-circle me-1"></i> Quick Test Logins:</div>
+            <div><strong>Warden:</strong> <code>admin@hostel.com</code> / <code>Admin@123</code></div>
+            <div><strong>Student:</strong> <code>student1@example.com</code> / <code>Student@123</code></div>
+          </div>
+
+          <div class="text-center small text-muted">
+            Don't have an account yet? <a href="/register" class="text-primary fw-semibold">Register as Student</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

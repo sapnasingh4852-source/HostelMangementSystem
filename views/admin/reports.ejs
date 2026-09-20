@@ -1,0 +1,97 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container-fluid px-lg-4 py-4 flex-grow-1">
+  <%- include('../partials/alerts') %>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">Hostel System Reports & Records</h2>
+      <p class="text-muted mb-0">Official institutional reports on accommodation occupancy, bed availability, and resident rosters.</p>
+    </div>
+    <div class="mt-2 mt-md-0">
+      <button onclick="window.print()" class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-printer me-1"></i> Print / Save as PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary Statistics Grid -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm border-0 text-center">
+        <div class="text-muted small fw-semibold">Total Campus Beds</div>
+        <div class="fs-3 fw-bold text-dark mt-1"><%= totalBeds %></div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm border-0 text-center">
+        <div class="text-muted small fw-semibold">Occupied Beds</div>
+        <div class="fs-3 fw-bold text-success mt-1"><%= occupiedBeds %></div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm border-0 text-center">
+        <div class="text-muted small fw-semibold">Available Beds</div>
+        <div class="fs-3 fw-bold text-primary mt-1"><%= availableBeds %></div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm border-0 text-center">
+        <div class="text-muted small fw-semibold">Current Occupancy Rate</div>
+        <div class="fs-3 fw-bold text-warning-emphasis mt-1">
+          <%= totalBeds > 0 ? ((occupiedBeds / totalBeds) * 100).toFixed(1) : 0 %>%
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Student Allotment Roster Table -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3">
+      <h5 class="fw-bold mb-0 text-dark">
+        <i class="bi bi-file-earmark-person-fill text-primary me-2"></i> Official Resident Student Roster (<%= allotments.length %> Active Allotments)
+      </h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Student Name</th>
+            <th>Roll No / ID</th>
+            <th>Hostel Block</th>
+            <th>Room Number</th>
+            <th>Room Type</th>
+            <th>Allotment Date</th>
+            <th>Department</th>
+            <th>Contact Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (allotments && allotments.length > 0) { %>
+            <% allotments.forEach((a, idx) => { %>
+              <tr>
+                <td><%= idx + 1 %></td>
+                <td class="fw-bold text-dark"><%= a.student ? a.student.name : 'Unknown' %></td>
+                <td><code><%= a.student ? a.student.studentId : 'N/A' %></code></td>
+                <td><%= a.block ? a.block.name : '-' %></td>
+                <td class="fw-bold text-primary">Room <%= a.room ? a.room.roomNumber : '-' %></td>
+                <td><%= a.room ? a.room.roomType : '-' %></td>
+                <td><%= helpers.formatDate(a.startDate) %></td>
+                <td><%= a.student ? a.student.department : '-' %></td>
+                <td><%= a.student ? a.student.phone : '-' %></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="9" class="text-center py-5 text-muted">No active student room allotments currently on file.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

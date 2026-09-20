@@ -1,0 +1,102 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <%- include('../partials/alerts') %>
+
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+          <div class="text-center mb-4">
+            <div class="stat-icon bg-success-subtle text-success mx-auto mb-2">
+              <i class="bi bi-person-plus-fill"></i>
+            </div>
+            <h3 class="fw-bold">Student Registration</h3>
+            <p class="text-muted small">Create your account to request hostel rooms and mess services</p>
+          </div>
+
+          <form action="/register" method="POST">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="name" class="form-label fw-semibold small">Full Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
+              </div>
+
+              <div class="col-md-6">
+                <label for="email" class="form-label fw-semibold small">Email Address <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="student@example.com" required>
+              </div>
+
+              <div class="col-md-6">
+                <label for="studentId" class="form-label fw-semibold small">Student ID / Roll No.</label>
+                <input type="text" class="form-control" id="studentId" name="studentId" placeholder="e.g. STU-2026-001">
+              </div>
+
+              <div class="col-md-6">
+                <label for="phone" class="form-label fw-semibold small">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" name="phone" placeholder="+91 98765 43210">
+              </div>
+
+              <div class="col-md-4">
+                <label for="gender" class="form-label fw-semibold small">Gender</label>
+                <select class="form-select" id="gender" name="gender">
+                  <option value="Male" selected>Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label for="department" class="form-label fw-semibold small">Department</label>
+                <select class="form-select" id="department" name="department">
+                  <option value="Computer Science" selected>Computer Science</option>
+                  <option value="Information Technology">Information Technology</option>
+                  <option value="Electronics & Comm.">Electronics & Comm.</option>
+                  <option value="Mechanical Eng.">Mechanical Eng.</option>
+                  <option value="Civil Engineering">Civil Engineering</option>
+                  <option value="Management Studies">Management Studies</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label for="year" class="form-label fw-semibold small">Year / Semester</label>
+                <select class="form-select" id="year" name="year">
+                  <option value="1st Year" selected>1st Year</option>
+                  <option value="2nd Year">2nd Year</option>
+                  <option value="3rd Year">3rd Year</option>
+                  <option value="4th Year">4th Year</option>
+                  <option value="Postgraduate">Postgraduate</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label for="password" class="form-label fw-semibold small">Password <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="At least 6 characters" required minlength="6">
+              </div>
+
+              <div class="col-md-6">
+                <label for="confirmPassword" class="form-label fw-semibold small">Confirm Password <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Repeat password" required minlength="6">
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <button type="submit" class="btn btn-success w-100 py-2 fw-semibold">
+                <i class="bi bi-check2-circle me-1"></i> Create Student Account
+              </button>
+            </div>
+          </form>
+
+          <hr class="my-4 text-muted">
+
+          <div class="text-center small text-muted">
+            Already have an account? <a href="/login" class="text-primary fw-semibold">Sign in here</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,82 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../partials/alerts') %>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h4 class="fw-bold mb-0"><i class="bi bi-person-circle text-primary me-2"></i> Student Profile</h4>
+        </div>
+        <div class="card-body p-4">
+          <form action="/student/profile" method="POST">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Full Name</label>
+                <input type="text" class="form-control" name="name" value="<%= user.name %>" required>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Email Address</label>
+                <input type="email" class="form-control bg-light" value="<%= user.email %>" readonly disabled>
+                <div class="form-text">Email address cannot be modified directly.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Student ID / Roll No.</label>
+                <input type="text" class="form-control bg-light" value="<%= user.studentId || 'Not Assigned' %>" readonly disabled>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Phone Number</label>
+                <input type="tel" class="form-control" name="phone" value="<%= user.phone || '' %>" placeholder="+91 98765 43210">
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Gender</label>
+                <select class="form-select" name="gender">
+                  <option value="Male" <%= user.gender === 'Male' ? 'selected' : '' %>>Male</option>
+                  <option value="Female" <%= user.gender === 'Female' ? 'selected' : '' %>>Female</option>
+                  <option value="Other" <%= user.gender === 'Other' ? 'selected' : '' %>>Other</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Department</label>
+                <select class="form-select" name="department">
+                  <option value="Computer Science" <%= user.department === 'Computer Science' ? 'selected' : '' %>>Computer Science</option>
+                  <option value="Information Technology" <%= user.department === 'Information Technology' ? 'selected' : '' %>>Information Technology</option>
+                  <option value="Electronics & Comm." <%= user.department === 'Electronics & Comm.' ? 'selected' : '' %>>Electronics & Comm.</option>
+                  <option value="Mechanical Eng." <%= user.department === 'Mechanical Eng.' ? 'selected' : '' %>>Mechanical Eng.</option>
+                  <option value="Civil Engineering" <%= user.department === 'Civil Engineering' ? 'selected' : '' %>>Civil Engineering</option>
+                  <option value="Management Studies" <%= user.department === 'Management Studies' ? 'selected' : '' %>>Management Studies</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Year / Semester</label>
+                <select class="form-select" name="year">
+                  <option value="1st Year" <%= user.year === '1st Year' ? 'selected' : '' %>>1st Year</option>
+                  <option value="2nd Year" <%= user.year === '2nd Year' ? 'selected' : '' %>>2nd Year</option>
+                  <option value="3rd Year" <%= user.year === '3rd Year' ? 'selected' : '' %>>3rd Year</option>
+                  <option value="4th Year" <%= user.year === '4th Year' ? 'selected' : '' %>>4th Year</option>
+                  <option value="Postgraduate" <%= user.year === 'Postgraduate' ? 'selected' : '' %>>Postgraduate</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mt-4 text-end">
+              <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                <i class="bi bi-save me-1"></i> Update Profile
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,109 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../partials/alerts') %>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">My Requests History</h2>
+      <p class="text-muted mb-0">Track all your room allotment and room change applications.</p>
+    </div>
+  </div>
+
+  <!-- Nav Tabs -->
+  <ul class="nav nav-pills mb-4" id="requestTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active fw-semibold" id="allotment-tab" data-bs-toggle="pill" data-bs-target="#allotment-pane" type="button" role="tab">
+        <i class="bi bi-door-open me-1"></i> Room Allotment Requests (<%= roomRequests.length %>)
+      </button>
+    </li>
+    <li class="nav-item ms-2" role="presentation">
+      <button class="nav-link fw-semibold" id="change-tab" data-bs-toggle="pill" data-bs-target="#change-pane" type="button" role="tab">
+        <i class="bi bi-arrow-left-right me-1"></i> Room Change Requests (<%= changeRequests.length %>)
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="requestTabsContent">
+    <!-- Pane 1: Room Requests -->
+    <div class="tab-pane fade show active" id="allotment-pane" role="tabpanel">
+      <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Date Applied</th>
+                <th>Target Block</th>
+                <th>Target Room</th>
+                <th>Room Type</th>
+                <th>My Remarks</th>
+                <th>Status</th>
+                <th>Admin Feedback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (roomRequests && roomRequests.length > 0) { %>
+                <% roomRequests.forEach(req => { %>
+                  <tr>
+                    <td><%= helpers.formatDate(req.createdAt) %></td>
+                    <td><span class="badge bg-light text-dark border"><%= req.preferredBlock ? req.preferredBlock.name : '-' %></span></td>
+                    <td class="fw-bold text-primary">Room <%= req.preferredRoom ? req.preferredRoom.roomNumber : '-' %></td>
+                    <td><%= req.preferredRoomType || '-' %></td>
+                    <td class="small text-muted"><%= req.remarks || '-' %></td>
+                    <td><span class="badge <%= helpers.statusBadge(req.status) %>"><%= req.status %></span></td>
+                    <td class="small text-secondary"><%= req.adminRemarks || 'Under review' %></td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="7" class="text-center py-4 text-muted">No room allotment applications found.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pane 2: Room Change Requests -->
+    <div class="tab-pane fade" id="change-pane" role="tabpanel">
+      <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Date Applied</th>
+                <th>Current Room</th>
+                <th>Requested Room</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Admin Feedback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (changeRequests && changeRequests.length > 0) { %>
+                <% changeRequests.forEach(req => { %>
+                  <tr>
+                    <td><%= helpers.formatDate(req.createdAt) %></td>
+                    <td>Room <%= req.currentRoom ? req.currentRoom.roomNumber : '-' %></td>
+                    <td class="fw-bold text-primary">Room <%= req.preferredRoom ? req.preferredRoom.roomNumber : '-' %></td>
+                    <td class="small text-muted" style="max-width: 250px;"><%= req.reason %></td>
+                    <td><span class="badge <%= helpers.statusBadge(req.status) %>"><%= req.status %></span></td>
+                    <td class="small text-secondary"><%= req.adminRemarks || 'Under review' %></td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="6" class="text-center py-4 text-muted">No room change requests found.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

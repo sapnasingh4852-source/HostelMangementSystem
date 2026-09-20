@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../partials/alerts') %>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h4 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-arrow-left-right me-2"></i> Request Room Change
+          </h4>
+        </div>
+        <div class="card-body p-4">
+          <!-- Current Room Banner -->
+          <div class="p-3 bg-light rounded border mb-4 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="text-muted small fw-semibold">Current Accommodation</div>
+              <div class="fw-bold text-dark fs-5">
+                <%= activeAllotment.block ? activeAllotment.block.name : '' %> &mdash; Room <%= activeAllotment.room ? activeAllotment.room.roomNumber : '' %>
+              </div>
+              <div class="small text-secondary"><%= activeAllotment.room ? activeAllotment.room.roomType : '' %> (Floor <%= activeAllotment.room ? activeAllotment.room.floor : '' %>)</div>
+            </div>
+            <span class="badge bg-success">Current Room</span>
+          </div>
+
+          <form action="/student/room-change" method="POST">
+            <!-- Preferred Target Room -->
+            <div class="mb-3">
+              <label for="preferredRoomId" class="form-label fw-semibold small">Select Preferred New Room <span class="text-danger">*</span></label>
+              <select class="form-select" id="preferredRoomId" name="preferredRoomId" required>
+                <option value="">-- Choose New Room --</option>
+                <% availableRooms.forEach(room => { %>
+                  <% const avail = Math.max(0, room.capacity - room.currentOccupancy); %>
+                  <option value="<%= room._id %>">
+                    <%= room.block ? room.block.name : 'Block' %> &mdash; Room <%= room.roomNumber %> &bull; <%= room.roomType %> (<%= avail %> bed<%= avail > 1 ? 's' : '' %> free)
+                  </option>
+                <% }) %>
+              </select>
+              <div class="form-text">Only rooms with vacant capacity are eligible for transfer.</div>
+            </div>
+
+            <!-- Reason for Change -->
+            <div class="mb-4">
+              <label for="reason" class="form-label fw-semibold small">Reason for Room Change <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="reason" name="reason" rows="4" placeholder="Please state reasons for requesting this room transfer (e.g. academic quietness, medical floor requirement, roommate compatibility)..." required></textarea>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="/student/my-room" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Cancel
+              </a>
+              <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                <i class="bi bi-send-fill me-1"></i> Submit Change Request
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

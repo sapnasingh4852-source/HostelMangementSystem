@@ -1,0 +1,117 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../../partials/alerts') %>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h4 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-door-open me-2"></i> <%= isEditing ? `Edit Room: ${room.roomNumber}` : 'Create New Room' %>
+          </h4>
+        </div>
+        <div class="card-body p-4">
+          <form action="<%= isEditing ? `/admin/rooms/${room._id}?_method=PUT` : '/admin/rooms' %>" method="POST">
+            <div class="row g-3">
+              <!-- Block -->
+              <div class="col-md-6">
+                <label for="block" class="form-label fw-semibold small">Hostel Block <span class="text-danger">*</span></label>
+                <select class="form-select" id="block" name="block" required>
+                  <option value="">-- Choose Block --</option>
+                  <% blocks.forEach(b => { %>
+                    <option value="<%= b._id %>" <%= (room.block && (room.block._id ? room.block._id.toString() : room.block.toString()) === b._id.toString()) ? 'selected' : '' %>>
+                      <%= b.name %> (<%= b.code %>)
+                    </option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <!-- Room Number -->
+              <div class="col-md-6">
+                <label for="roomNumber" class="form-label fw-semibold small">Room Number / ID <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="roomNumber" name="roomNumber" value="<%= room.roomNumber || '' %>" placeholder="e.g. 101, B-204" required>
+              </div>
+
+              <!-- Floor -->
+              <div class="col-md-4">
+                <label for="floor" class="form-label fw-semibold small">Floor Level <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="floor" name="floor" value="<%= room.floor !== undefined ? room.floor : 1 %>" min="0" required>
+              </div>
+
+              <!-- Room Type -->
+              <div class="col-md-4">
+                <label for="roomType" class="form-label fw-semibold small">Room Type <span class="text-danger">*</span></label>
+                <select class="form-select" id="roomType" name="roomType" required>
+                  <option value="Single" <%= room.roomType === 'Single' ? 'selected' : '' %>>Single Bed</option>
+                  <option value="Double" <%= room.roomType === 'Double' ? 'selected' : '' %>>Double Sharing</option>
+                  <option value="Triple" <%= room.roomType === 'Triple' ? 'selected' : '' %>>Triple Sharing</option>
+                  <option value="Dormitory" <%= room.roomType === 'Dormitory' ? 'selected' : '' %>>Dormitory</option>
+                </select>
+              </div>
+
+              <!-- Capacity -->
+              <div class="col-md-4">
+                <label for="capacity" class="form-label fw-semibold small">Total Bed Capacity <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="capacity" name="capacity" value="<%= room.capacity || 2 %>" min="<%= isEditing ? (room.currentOccupancy || 1) : 1 %>" max="20" required>
+                <% if (isEditing && room.currentOccupancy > 0) { %>
+                  <div class="form-text text-danger">Minimum <%= room.currentOccupancy %> (students currently allotted).</div>
+                <% } %>
+              </div>
+
+              <!-- Monthly Fee -->
+              <div class="col-md-6">
+                <label for="monthlyFee" class="form-label fw-semibold small">Monthly Rent (₹)</label>
+                <input type="number" class="form-control" id="monthlyFee" name="monthlyFee" value="<%= room.monthlyFee || 0 %>" min="0">
+              </div>
+
+              <!-- Status -->
+              <div class="col-md-6">
+                <label for="status" class="form-label fw-semibold small">Status</label>
+                <select class="form-select" id="status" name="status">
+                  <option value="Available" <%= room.status === 'Available' ? 'selected' : '' %>>Available</option>
+                  <option value="Full" <%= room.status === 'Full' ? 'selected' : '' %>>Full</option>
+                  <option value="Maintenance" <%= room.status === 'Maintenance' ? 'selected' : '' %>>Under Maintenance</option>
+                  <option value="Inactive" <%= room.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
+                </select>
+              </div>
+
+              <!-- Facilities / Amenities Checkboxes -->
+              <div class="col-12">
+                <label class="form-label fw-semibold small d-block">Room Facilities & Amenities</label>
+                <div class="row g-2">
+                  <% const facilityOptions = [
+                    'Attached Bathroom', 'Wi-Fi', 'AC', 'Balcony', 'Study Table', 'Cupboard', 'Fan'
+                  ]; %>
+                  <% facilityOptions.forEach(opt => { %>
+                    <div class="col-sm-6 col-md-4">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="facilities" value="<%= opt %>" id="fac_<%= opt.replace(/\s+/g, '') %>"
+                          <%= (room.facilities && room.facilities.includes(opt)) ? 'checked' : '' %>>
+                        <label class="form-check-label small" for="fac_<%= opt.replace(/\s+/g, '') %>">
+                          <%= opt %>
+                        </label>
+                      </div>
+                    </div>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <a href="/admin/rooms" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Cancel
+              </a>
+              <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                <i class="bi bi-save me-1"></i> <%= isEditing ? 'Save Changes' : 'Create Room' %>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/footer') %>

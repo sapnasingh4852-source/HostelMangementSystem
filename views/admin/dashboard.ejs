@@ -1,0 +1,372 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container-fluid px-lg-4 py-4 flex-grow-1">
+  <%- include('../partials/alerts') %>
+
+  <!-- Admin Header -->
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">Warden & Administrator Dashboard</h2>
+      <p class="text-muted mb-0">Live occupancy overview, facility operations, and pending student requests.</p>
+    </div>
+    <div class="mt-2 mt-md-0 d-flex gap-2">
+      <a href="/admin/rooms/new" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-plus-lg me-1"></i> Add Room
+      </a>
+      <a href="/admin/blocks/new" class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-building-add me-1"></i> Add Block
+      </a>
+      <a href="/admin/room-requests" class="btn btn-primary btn-sm fw-semibold">
+        <i class="bi bi-bell-fill me-1"></i> Review Requests (<%= stats.pendingRoomRequests %>)
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI Statistics Row -->
+  <div class="row g-3 mb-4">
+    <!-- Total Students -->
+    <div class="col-sm-6 col-xl-2">
+      <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Students</div>
+            <div class="fs-4 fw-bold text-dark mt-1"><%= stats.totalStudents %></div>
+          </div>
+          <div class="stat-icon bg-primary-subtle text-primary">
+            <i class="bi bi-people-fill"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hostel Blocks -->
+    <div class="col-sm-6 col-xl-2">
+      <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Blocks</div>
+            <div class="fs-4 fw-bold text-dark mt-1"><%= stats.totalBlocks %></div>
+          </div>
+          <div class="stat-icon bg-dark-subtle text-dark">
+            <i class="bi bi-building"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Rooms -->
+    <div class="col-sm-6 col-xl-2">
+      <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Rooms</div>
+            <div class="fs-4 fw-bold text-dark mt-1"><%= stats.totalRooms %></div>
+          </div>
+          <div class="stat-icon bg-secondary-subtle text-secondary">
+            <i class="bi bi-door-open"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Beds -->
+    <div class="col-sm-6 col-xl-2">
+      <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Total Beds</div>
+            <div class="fs-4 fw-bold text-dark mt-1"><%= stats.totalBeds %></div>
+          </div>
+          <div class="stat-icon bg-info-subtle text-info">
+            <i class="bi bi-grid-3x3-gap-fill"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Occupied Beds -->
+    <div class="col-sm-6 col-xl-2">
+      <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Occupied</div>
+            <div class="fs-4 fw-bold text-success mt-1"><%= stats.occupiedBeds %></div>
+          </div>
+          <div class="stat-icon bg-success-subtle text-success">
+            <i class="bi bi-person-fill-check"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Beds -->
+    <div class="col-sm-6 col-xl-2">
+      <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted small fw-semibold text-uppercase">Available</div>
+            <div class="fs-4 fw-bold text-primary mt-1"><%= stats.availableBeds %></div>
+          </div>
+          <div class="stat-icon bg-primary-subtle text-primary">
+            <i class="bi bi-check2-circle"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Secondary Metrics Row: Occupancy % and Action Counts -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm border-0 border-start border-4 border-primary">
+        <div class="small text-muted fw-semibold">Overall Campus Occupancy</div>
+        <div class="d-flex align-items-baseline justify-content-between mt-1">
+          <div class="fs-3 fw-bold text-primary"><%= stats.occupancyPercentage %>%</div>
+          <div class="small text-muted"><%= stats.occupiedBeds %> of <%= stats.totalBeds %> Beds</div>
+        </div>
+        <div class="progress mt-2" style="height: 6px;">
+          <div class="progress-bar bg-primary" style="width: <%= stats.occupancyPercentage %>%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <a href="/admin/room-requests" class="text-decoration-none">
+        <div class="card p-3 shadow-sm border-0 border-start border-4 border-warning card-hover">
+          <div class="small text-muted fw-semibold">Pending Room Requests</div>
+          <div class="fs-3 fw-bold text-warning-emphasis mt-1"><%= stats.pendingRoomRequests %></div>
+          <div class="small text-muted">Awaiting allotment decision &rarr;</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-3">
+      <a href="/admin/room-change-requests" class="text-decoration-none">
+        <div class="card p-3 shadow-sm border-0 border-start border-4 border-info card-hover">
+          <div class="small text-muted fw-semibold">Pending Room Changes</div>
+          <div class="fs-3 fw-bold text-info mt-1"><%= stats.pendingChangeRequests %></div>
+          <div class="small text-muted">Room transfers pending review &rarr;</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-3">
+      <a href="/admin/maintenance" class="text-decoration-none">
+        <div class="card p-3 shadow-sm border-0 border-start border-4 border-danger card-hover">
+          <div class="small text-muted fw-semibold">Active Complaints</div>
+          <div class="fs-3 fw-bold text-danger mt-1"><%= stats.pendingMaintenance %></div>
+          <div class="small text-muted">Maintenance tickets in queue &rarr;</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Interactive Charts Row -->
+  <div class="row g-4 mb-4">
+    <!-- Block-Wise Occupancy Bar Chart -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-white py-3">
+          <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-bar-chart-fill text-primary me-2"></i> Block-Wise Occupancy Rate (%)</h5>
+        </div>
+        <div class="card-body">
+          <canvas id="blockOccupancyChart" height="120"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bed Allocation Doughnut Chart -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-white py-3">
+          <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-pie-chart-fill text-success me-2"></i> Bed Utilization</h5>
+        </div>
+        <div class="card-body d-flex align-items-center justify-content-center">
+          <div style="max-height: 240px; width: 100%;">
+            <canvas id="bedUtilizationChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block-Wise Occupancy Table -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h5 class="fw-bold mb-0"><i class="bi bi-building text-primary me-2"></i> Block-Wise Occupancy Overview</h5>
+      <a href="/admin/blocks" class="btn btn-sm btn-outline-secondary">Manage Blocks</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Block Name</th>
+            <th>Code</th>
+            <th>Type</th>
+            <th>Total Beds</th>
+            <th>Occupied</th>
+            <th>Available</th>
+            <th style="min-width: 180px;">Occupancy %</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (blockStats && blockStats.length > 0) { %>
+            <% blockStats.forEach(b => { %>
+              <tr>
+                <td class="fw-bold text-dark"><%= b.name %></td>
+                <td><code><%= b.code %></code></td>
+                <td><span class="badge bg-light text-dark border"><%= b.genderRestriction %></span></td>
+                <td><%= b.totalBeds %></td>
+                <td class="text-success fw-semibold"><%= b.occupiedBeds %></td>
+                <td class="text-primary fw-semibold"><%= b.availableBeds %></td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="progress flex-grow-1" style="height: 8px;">
+                      <div class="progress-bar <%= b.occupancyPercentage >= 90 ? 'bg-danger' : b.occupancyPercentage >= 70 ? 'bg-warning' : 'bg-success' %>" 
+                        style="width: <%= b.occupancyPercentage %>%;"></div>
+                    </div>
+                    <span class="small fw-bold text-muted"><%= b.occupancyPercentage %>%</span>
+                  </div>
+                </td>
+                <td><span class="badge <%= helpers.statusBadge(b.status) %>"><%= b.status %></span></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="8" class="text-center py-4 text-muted">No hostel blocks created yet.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pending Room Requests Preview Table -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+      <h5 class="fw-bold mb-0 text-warning-emphasis">
+        <i class="bi bi-bell-fill text-warning me-2"></i> Pending Room Requests Requiring Action
+      </h5>
+      <a href="/admin/room-requests" class="btn btn-sm btn-outline-warning text-dark">View All Requests &rarr;</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Student</th>
+            <th>Department</th>
+            <th>Target Room</th>
+            <th>Remarks</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (recentRoomRequests && recentRoomRequests.length > 0) { %>
+            <% recentRoomRequests.forEach(req => { %>
+              <tr>
+                <td><%= helpers.formatDate(req.createdAt) %></td>
+                <td>
+                  <div class="fw-bold text-dark"><%= req.student ? req.student.name : 'Unknown' %></div>
+                  <div class="small text-muted">Roll: <%= req.student ? req.student.studentId : 'N/A' %></div>
+                </td>
+                <td><%= req.student ? req.student.department : '-' %></td>
+                <td>
+                  <span class="badge bg-primary">Room <%= req.preferredRoom ? req.preferredRoom.roomNumber : '-' %></span>
+                  <div class="small text-muted"><%= req.preferredBlock ? req.preferredBlock.name : '' %></div>
+                </td>
+                <td class="small text-muted"><%= req.remarks || '-' %></td>
+                <td class="text-end">
+                  <div class="d-inline-flex gap-1">
+                    <form action="/admin/room-requests/<%= req._id %>/approve" method="POST" class="d-inline">
+                      <button type="submit" class="btn btn-sm btn-success fw-semibold">
+                        <i class="bi bi-check-lg me-1"></i> Approve
+                      </button>
+                    </form>
+                    <form action="/admin/room-requests/<%= req._id %>/reject" method="POST" class="d-inline" data-confirm="Are you sure you want to reject this room request?">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-x-lg"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center py-4 text-muted">
+                No pending room allotment requests. Great job!
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Chart.js initialization script -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const blockLabels = <%- JSON.stringify(chartData.blockLabels) %>;
+    const blockOccupancies = <%- JSON.stringify(chartData.blockOccupancies) %>;
+    const bedBreakdown = <%- JSON.stringify(chartData.bedBreakdown) %>;
+
+    // 1. Block Occupancy Bar Chart
+    const barCtx = document.getElementById('blockOccupancyChart');
+    if (barCtx) {
+      new Chart(barCtx, {
+        type: 'bar',
+        data: {
+          labels: blockLabels.length > 0 ? blockLabels : ['No Blocks'],
+          datasets: [{
+            label: 'Occupancy %',
+            data: blockOccupancies.length > 0 ? blockOccupancies : [0],
+            backgroundColor: '#3b82f6',
+            borderRadius: 6,
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: { callback: (val) => val + '%' }
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    // 2. Bed Utilization Doughnut Chart
+    const doughnutCtx = document.getElementById('bedUtilizationChart');
+    if (doughnutCtx) {
+      new Chart(doughnutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Occupied Beds', 'Available Beds'],
+          datasets: [{
+            data: bedBreakdown[0] + bedBreakdown[1] > 0 ? bedBreakdown : [0, 1],
+            backgroundColor: ['#10b981', '#cbd5e1'],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    }
+  });
+</script>
+
+<%- include('../partials/footer') %>

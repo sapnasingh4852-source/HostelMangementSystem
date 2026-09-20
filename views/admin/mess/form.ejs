@@ -1,0 +1,107 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<main class="container py-4 flex-grow-1">
+  <%- include('../../partials/alerts') %>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h4 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-calendar-week me-2"></i> <%= isEditing ? 'Edit Weekly Mess Menu' : 'Schedule New Weekly Mess Menu' %>
+          </h4>
+        </div>
+        <div class="card-body p-4">
+          <form action="<%= isEditing ? `/admin/mess/${menu._id}?_method=PUT` : '/admin/mess' %>" method="POST">
+            <!-- Header Controls -->
+            <div class="row g-3 mb-4 p-3 bg-light rounded">
+              <div class="col-md-4">
+                <label for="title" class="form-label fw-semibold small">Menu Title</label>
+                <input type="text" class="form-control" id="title" name="title" value="<%= menu.title || 'Weekly Mess Menu' %>" required>
+              </div>
+
+              <div class="col-md-3">
+                <label for="weekStartDate" class="form-label fw-semibold small">Week Start (Monday)</label>
+                <input type="date" class="form-control" id="weekStartDate" name="weekStartDate" value="<%= helpers.formatDate(menu.weekStartDate, 'input') %>" required>
+              </div>
+
+              <div class="col-md-3">
+                <label for="weekEndDate" class="form-label fw-semibold small">Week End (Sunday)</label>
+                <input type="date" class="form-control" id="weekEndDate" name="weekEndDate" value="<%= helpers.formatDate(menu.weekEndDate, 'input') %>" required>
+              </div>
+
+              <div class="col-md-2">
+                <label for="status" class="form-label fw-semibold small">Status</label>
+                <select class="form-select" id="status" name="status">
+                  <option value="Draft" <%= menu.status === 'Draft' ? 'selected' : '' %>>Draft</option>
+                  <option value="Published" <%= menu.status === 'Published' ? 'selected' : '' %>>Published</option>
+                  <option value="Archived" <%= menu.status === 'Archived' ? 'selected' : '' %>>Archived</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 7 Days Inputs -->
+            <h5 class="fw-bold mb-3 text-secondary">Daily Meal Details</h5>
+
+            <% const days = [
+              { key: 'monday', label: 'Monday' },
+              { key: 'tuesday', label: 'Tuesday' },
+              { key: 'wednesday', label: 'Wednesday' },
+              { key: 'thursday', label: 'Thursday' },
+              { key: 'friday', label: 'Friday' },
+              { key: 'saturday', label: 'Saturday' },
+              { key: 'sunday', label: 'Sunday' }
+            ]; %>
+
+            <div class="accordion mb-4" id="daysAccordion">
+              <% days.forEach((day, index) => { %>
+                <% const dayData = (menu.menu && menu.menu[day.key]) || {}; %>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="heading<%= day.key %>">
+                    <button class="accordion-button <%= index > 0 ? 'collapsed' : '' %> fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%= day.key %>">
+                      <i class="bi bi-calendar-day me-2 text-primary"></i> <%= day.label %> Menu
+                    </button>
+                  </h2>
+                  <div id="collapse<%= day.key %>" class="accordion-collapse collapse <%= index === 0 ? 'show' : '' %>" data-bs-parent="#daysAccordion">
+                    <div class="accordion-body">
+                      <div class="row g-3">
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold small text-warning-emphasis">Breakfast</label>
+                          <input type="text" class="form-control" name="days[<%= day.key %>][breakfast]" value="<%= dayData.breakfast || '' %>" placeholder="e.g. Poha, Boiled Egg, Banana, Tea">
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold small text-primary">Lunch</label>
+                          <input type="text" class="form-control" name="days[<%= day.key %>][lunch]" value="<%= dayData.lunch || '' %>" placeholder="e.g. Steamed Rice, Dal Makhani, Mixed Veg, Roti, Salad">
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold small text-info">Snacks</label>
+                          <input type="text" class="form-control" name="days[<%= day.key %>][snacks]" value="<%= dayData.snacks || '' %>" placeholder="e.g. Veg Cutlet, Chai">
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold small text-success">Dinner</label>
+                          <input type="text" class="form-control" name="days[<%= day.key %>][dinner]" value="<%= dayData.dinner || '' %>" placeholder="e.g. Paneer Butter Masala, Roti, Jeera Rice, Gulab Jamun">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="/admin/mess" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Cancel
+              </a>
+              <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                <i class="bi bi-save me-1"></i> <%= isEditing ? 'Update Menu' : 'Save Weekly Menu' %>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/footer') %>

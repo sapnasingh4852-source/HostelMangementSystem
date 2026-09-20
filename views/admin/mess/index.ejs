@@ -1,0 +1,78 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<main class="container-fluid px-lg-4 py-4 flex-grow-1">
+  <%- include('../../partials/alerts') %>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">Mess Menu Management</h2>
+      <p class="text-muted mb-0">Create, schedule, and publish weekly catering menus for student residents.</p>
+    </div>
+    <div class="mt-2 mt-md-0 d-flex gap-2">
+      <a href="/admin/mess-feedback" class="btn btn-outline-warning text-dark">
+        <i class="bi bi-star-fill text-warning me-1"></i> Meal Feedback Analytics
+      </a>
+      <a href="/admin/mess/new" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i> New Weekly Menu
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <% if (menus && menus.length > 0) { %>
+      <% menus.forEach(m => { %>
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm border-0 card-hover">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="fw-bold text-dark mb-0"><%= m.title %></h5>
+                <span class="small text-muted">
+                  <%= helpers.formatDate(m.weekStartDate) %> &ndash; <%= helpers.formatDate(m.weekEndDate) %>
+                </span>
+              </div>
+              <span class="badge <%= helpers.statusBadge(m.status) %>"><%= m.status %></span>
+            </div>
+            <div class="card-body">
+              <div class="bg-light p-3 rounded small mb-3">
+                <div class="fw-semibold text-dark mb-1">Monday Sample:</div>
+                <div class="text-muted"><strong>B:</strong> <%= (m.menu && m.menu.monday && m.menu.monday.breakfast) || 'N/A' %></div>
+                <div class="text-muted"><strong>L:</strong> <%= (m.menu && m.menu.monday && m.menu.monday.lunch) || 'N/A' %></div>
+                <div class="text-muted"><strong>D:</strong> <%= (m.menu && m.menu.monday && m.menu.monday.dinner) || 'N/A' %></div>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center small text-muted">
+                <span>By: <%= m.publishedBy ? m.publishedBy.name : 'Admin' %></span>
+                <% if (m.publishedDate) { %>
+                  <span>Pub: <%= helpers.formatDate(m.publishedDate) %></span>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="card-footer bg-white border-0 pt-0 pb-3 d-flex justify-content-end gap-2">
+              <a href="/admin/mess/<%= m._id %>/edit" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil-square me-1"></i> Edit Menu
+              </a>
+              <form action="/admin/mess/<%= m._id %>/delete" method="POST" class="d-inline" data-confirm="Are you sure you want to delete this weekly menu?">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="col-12">
+        <div class="card p-5 text-center shadow-sm border-0 text-muted">
+          <i class="bi bi-calendar3 fs-1 mb-2 text-secondary"></i>
+          <h4>No Mess Menus Created</h4>
+          <p class="small text-muted mb-3">Schedule your first weekly meal calendar for the hostel.</p>
+          <div><a href="/admin/mess/new" class="btn btn-primary btn-sm">Create First Menu</a></div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,146 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<main class="container-fluid px-lg-4 py-4 flex-grow-1">
+  <%- include('../../partials/alerts') %>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">Maintenance Complaints Desk</h2>
+      <p class="text-muted mb-0">Track facility breakdowns, dispatch maintenance crew, and update ticket resolution statuses.</p>
+    </div>
+  </div>
+
+  <!-- Filter Card -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-3">
+      <form action="/admin/maintenance" method="GET" class="row g-2 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold small">Status</label>
+          <select name="status" class="form-select form-select-sm">
+            <option value="">All Statuses</option>
+            <option value="Pending" <%= query.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+            <option value="In Progress" <%= query.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+            <option value="Resolved" <%= query.status === 'Resolved' ? 'selected' : '' %>>Resolved</option>
+            <option value="Rejected" <%= query.status === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-semibold small">Priority</label>
+          <select name="priority" class="form-select form-select-sm">
+            <option value="">All Priorities</option>
+            <option value="Emergency" <%= query.priority === 'Emergency' ? 'selected' : '' %>>Emergency</option>
+            <option value="High" <%= query.priority === 'High' ? 'selected' : '' %>>High</option>
+            <option value="Medium" <%= query.priority === 'Medium' ? 'selected' : '' %>>Medium</option>
+            <option value="Low" <%= query.priority === 'Low' ? 'selected' : '' %>>Low</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label fw-semibold small">Category</label>
+          <select name="category" class="form-select form-select-sm">
+            <option value="">All Categories</option>
+            <option value="Electrical" <%= query.category === 'Electrical' ? 'selected' : '' %>>Electrical</option>
+            <option value="Plumbing" <%= query.category === 'Plumbing' ? 'selected' : '' %>>Plumbing</option>
+            <option value="Fan" <%= query.category === 'Fan' ? 'selected' : '' %>>Fan</option>
+            <option value="Light" <%= query.category === 'Light' ? 'selected' : '' %>>Light</option>
+            <option value="Furniture" <%= query.category === 'Furniture' ? 'selected' : '' %>>Furniture</option>
+            <option value="Wi-Fi" <%= query.category === 'Wi-Fi' ? 'selected' : '' %>>Wi-Fi</option>
+            <option value="Door/Window" <%= query.category === 'Door/Window' ? 'selected' : '' %>>Door/Window</option>
+            <option value="Cleaning" <%= query.category === 'Cleaning' ? 'selected' : '' %>>Cleaning</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label fw-semibold small">Hostel Block</label>
+          <select name="block" class="form-select form-select-sm">
+            <option value="">All Blocks</option>
+            <% blocks.forEach(b => { %>
+              <option value="<%= b._id %>" <%= query.block == b._id.toString() ? 'selected' : '' %>><%= b.name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="col-md-2 d-flex gap-2">
+          <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold">Filter</button>
+          <a href="/admin/maintenance" class="btn btn-outline-secondary btn-sm">Reset</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tickets Table -->
+  <div class="card shadow-sm border-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Student</th>
+            <th>Category & Priority</th>
+            <th>Issue Title & Details</th>
+            <th>Current Status</th>
+            <th style="min-width: 250px;">Update Status / Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (requests && requests.length > 0) { %>
+            <% requests.forEach(ticket => { %>
+              <tr>
+                <td><%= helpers.formatDate(ticket.createdAt) %></td>
+                <td>
+                  <span class="badge bg-light text-dark border">
+                    <%= ticket.block ? ticket.block.name : '-' %>
+                  </span>
+                  <div class="fw-bold text-primary">Room <%= ticket.room ? ticket.room.roomNumber : '-' %></div>
+                </td>
+                <td>
+                  <div class="fw-semibold text-dark"><%= ticket.student ? ticket.student.name : 'Unknown' %></div>
+                  <div class="small text-muted"><%= ticket.student ? ticket.student.phone : '' %></div>
+                </td>
+                <td>
+                  <div><span class="badge bg-light text-dark border"><%= ticket.category %></span></div>
+                  <span class="badge <%= helpers.priorityBadge(ticket.priority) %> mt-1"><%= ticket.priority %></span>
+                </td>
+                <td>
+                  <div class="fw-semibold text-dark"><%= ticket.title %></div>
+                  <div class="small text-muted" style="max-width: 300px;"><%= ticket.description %></div>
+                </td>
+                <td>
+                  <span class="badge <%= helpers.statusBadge(ticket.status) %>"><%= ticket.status %></span>
+                  <% if (ticket.adminRemarks) { %>
+                    <div class="small text-secondary mt-1"><em>"<%= ticket.adminRemarks %>"</em></div>
+                  <% } %>
+                </td>
+                <td>
+                  <form action="/admin/maintenance/<%= ticket._id %>/status" method="POST" class="d-flex flex-column gap-1">
+                    <div class="input-group input-group-sm">
+                      <select name="status" class="form-select form-select-sm" required>
+                        <option value="Pending" <%= ticket.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                        <option value="In Progress" <%= ticket.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+                        <option value="Resolved" <%= ticket.status === 'Resolved' ? 'selected' : '' %>>Resolved</option>
+                        <option value="Rejected" <%= ticket.status === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+                      </select>
+                      <button type="submit" class="btn btn-sm btn-outline-primary fw-semibold">Save</button>
+                    </div>
+                    <input type="text" name="adminRemarks" class="form-control form-control-sm" placeholder="Add resolution note..." value="<%= ticket.adminRemarks || '' %>">
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" class="text-center py-5 text-muted">
+                No maintenance tickets found matching filter.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/footer') %>

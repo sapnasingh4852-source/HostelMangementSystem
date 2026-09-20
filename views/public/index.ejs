@@ -1,0 +1,152 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="flex-grow-1">
+  <!-- Hero Section -->
+  <section class="hero-section text-center">
+    <div class="container py-4">
+      <span class="badge bg-warning text-dark px-3 py-2 fs-6 rounded-pill mb-3 fw-semibold shadow-sm">
+        <i class="bi bi-stars me-1"></i> Modern Campus Living Simplified
+      </span>
+      <h1 class="display-4 fw-bold mb-3">Hostel Room Allotment & Mess Management</h1>
+      <p class="lead mb-4 mx-auto text-white-50" style="max-width: 750px;">
+        A centralized university platform coordinating student room allotments, maintenance complaints, weekly mess schedules, and meal feedback.
+      </p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="/login" class="btn btn-warning btn-lg px-4 fw-bold text-dark shadow">
+          <i class="bi bi-box-arrow-in-right me-2"></i> Access Portal
+        </a>
+        <a href="/register" class="btn btn-outline-light btn-lg px-4 fw-semibold">
+          <i class="bi bi-person-plus me-2"></i> Student Registration
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo Credentials Callout -->
+  <div class="container mt-n4" style="margin-top: -2rem;">
+    <div class="card border-0 shadow-sm bg-white p-3 mb-5">
+      <div class="row align-items-center">
+        <div class="col-md-auto text-center text-md-start mb-2 mb-md-0">
+          <span class="badge bg-primary-subtle text-primary p-2 fs-6"><i class="bi bi-key-fill me-1"></i> Demo Credentials</span>
+        </div>
+        <div class="col-md text-muted small">
+          <strong>Warden Admin:</strong> <code>admin@hostel.com</code> / <code>Admin@123</code> &bull;
+          <strong>Student:</strong> <code>student1@example.com</code> / <code>Student@123</code>
+        </div>
+        <div class="col-md-auto text-end">
+          <a href="/login" class="btn btn-sm btn-outline-primary">Quick Login &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Grid -->
+  <section class="container py-4">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Platform Core Capabilities</h2>
+      <p class="text-muted">Designed for seamless campus administration and student satisfaction</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 card-hover p-3 text-center">
+          <div class="stat-icon bg-primary-subtle text-primary mx-auto mb-3">
+            <i class="bi bi-door-open-fill"></i>
+          </div>
+          <h5 class="fw-bold">Room Allotments</h5>
+          <p class="text-muted small">
+            Browse rooms, track bed availability, apply online, and vacate with instant real-time occupancy updates.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 card-hover p-3 text-center">
+          <div class="stat-icon bg-warning-subtle text-warning mx-auto mb-3">
+            <i class="bi bi-arrow-left-right"></i>
+          </div>
+          <h5 class="fw-bold">Room Transfers</h5>
+          <p class="text-muted small">
+            Request room changes with verified vacancy checks and atomic bed transfer workflows.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 card-hover p-3 text-center">
+          <div class="stat-icon bg-danger-subtle text-danger mx-auto mb-3">
+            <i class="bi bi-tools"></i>
+          </div>
+          <h5 class="fw-bold">Maintenance Desk</h5>
+          <p class="text-muted small">
+            Submit electrical, plumbing, and Wi-Fi complaints with priority tags and live resolution tracking.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 card-hover p-3 text-center">
+          <div class="stat-icon bg-success-subtle text-success mx-auto mb-3">
+            <i class="bi bi-cup-hot-fill"></i>
+          </div>
+          <h5 class="fw-bold">Mess & Nutrition</h5>
+          <p class="text-muted small">
+            Publish weekly 7-day menus across 4 daily meals and collect student feedback to optimize food quality.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Role Comparison -->
+  <section class="container py-5">
+    <div class="row g-4 align-items-stretch">
+      <div class="col-lg-6">
+        <div class="card h-100 border-primary shadow-sm p-4">
+          <div class="d-flex align-items-center mb-3">
+            <span class="stat-icon bg-primary text-white me-3">
+              <i class="bi bi-mortarboard-fill"></i>
+            </span>
+            <div>
+              <h4 class="fw-bold mb-0">For Students</h4>
+              <span class="text-muted small">Empowered, frictionless campus living</span>
+            </div>
+          </div>
+          <ul class="list-unstyled text-secondary mb-4 space-y-2">
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Browse available rooms with live vacancy counts & facilities.</li>
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Submit and monitor room allotment and room change requests.</li>
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Raise maintenance requests for your room directly to wardens.</li>
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> View today's mess menu and submit daily ratings for each meal.</li>
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Check monthly attendance-based mess billing statements.</li>
+          </ul>
+          <a href="/register" class="btn btn-outline-primary mt-auto">Create Student Account</a>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card h-100 border-dark shadow-sm p-4">
+          <div class="d-flex align-items-center mb-3">
+            <span class="stat-icon bg-dark text-white me-3">
+              <i class="bi bi-shield-lock-fill"></i>
+            </span>
+            <div>
+              <h4 class="fw-bold mb-0">For Wardens & Administrators</h4>
+              <span class="text-muted small">Complete supervisory oversight</span>
+            </div>
+          </div>
+          <ul class="list-unstyled text-secondary mb-4 space-y-2">
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Real-time occupancy analytics, Chart.js metrics, and block capacity.</li>
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Safe, atomic one-click approvals for room allotments and changes.</li>
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Hostel block and room CRUD with capacity & occupancy guards.</li>
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Manage maintenance tickets from Pending to In Progress & Resolved.</li>
+            <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Draft, publish weekly mess menus, and analyze meal ratings.</li>
+          </ul>
+          <a href="/login" class="btn btn-dark mt-auto">Login to Warden Portal</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>
